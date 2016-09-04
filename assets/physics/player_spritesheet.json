@@ -1,0 +1,30 @@
+{
+  "torso": [
+      {
+        "density": 2, "friction": 0, "bounce": 0,
+        "filter": { "categoryBits": 1, "maskBits": 65535 },
+        "shape": [   0, 0  ,  50, 0  ,  50, 150 ,  0, 150   ]
+      }
+  ],
+  "shoulder": [
+      {
+        "density": 2, "friction": 0, "bounce": 0,
+        "filter": { "categoryBits": 1, "maskBits": 65535 },
+        "shape": [   0, 0  ,  20, 0  ,  20, 65  ,  0, 65  ]
+      }
+  ],
+  "head": [
+      {
+        "density": 2, "friction": 0, "bounce": 0,
+        "filter": { "categoryBits": 1, "maskBits": 65535 },
+        "shape": [   0, 0  ,  30, 0  ,  30, 45  ,  0, 45  ]
+      }
+  ],
+  "butt": [
+      {
+        "density": 2, "friction": 0, "bounce": 0,
+        "filter": { "categoryBits": 1, "maskBits": 65535 },
+        "shape": [   0, 0  ,  25, 0  ,  25, 75  ,  0, 75  ]
+      }
+  ]
+}

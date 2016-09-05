@@ -1,4 +1,5 @@
-var mashineGunSpeed = 200;
+var weaponSpeed = 3000,
+  bulletSpeed = 170;
 
 function Obstacle(game, player) {
   this.game = game;
@@ -6,6 +7,62 @@ function Obstacle(game, player) {
   this.weapon;
 
   this.debug = "|ok";
+}
+
+function Weapon(game, player) {
+  this.game = game;
+  this.player = player;
+  this.nextShot = 0;
+  this.bulletsInfo = {
+    image: "bullets_atlas",
+    frame: {
+      frame1: "bullet1.png",
+      frame2: "bullet2.png"
+    }
+  }
+
+  this.bulletGroup = this.game.add.group();
+  this.bulletGroup.enableBody = true;
+  this.bulletGroup.physicsBodyType = Phaser.Physics.P2JS;
+
+  this.player.collisionGroups.bullets = this.game.physics.p2.createCollisionGroup();
+}
+
+Weapon.prototype.fire = function (from, to) {
+  if (this.game.time.now < this.nextShot && this.nextShot != 0) {
+        return false;
+  }
+
+  var bullet = this.bulletGroup.create(from[0], from[1], this.bulletsInfo.image);
+  var bulletAngle = Phaser.Math.angleBetween(to[0],  to[1], from[0],  from[1]);
+  bullet.frame = this.bulletsInfo.frame.frame1;
+  //bullet.body.rotation = Phaser.Math.radToDeg(bulletAngle);
+  bullet.body.rotation = bulletAngle;
+  bullet.body.kinematic = true;
+  bullet.body.velocity.y = -bulletSpeed * Math.sin(bulletAngle);
+  bullet.body.velocity.x = -bulletSpeed * Math.cos(bulletAngle);
+  bullet.body.setCollisionGroup(this.player.collisionGroups.bullets);
+  bullet.body.collides(this.player.collisionGroups.torso);
+  //bullet.body.collides(this.player.collisionGroups.bullets);
+
+  this.nextShot = this.game.time.now + weaponSpeed;
+}
+
+Weapon.prototype.fireToSprite = function (from, toSprite) {
+  this.fire(from,[toSprite.x, toSprite.y]);
+}
+
+Weapon.prototype.refresh = function () {
+  this.bulletGroup.forEach(destoyBullet, this, true);
+}
+
+function destoyBullet (bullet) {
+  if (bullet.x < 0 - bullet.height - bullet.width
+    || bullet.x > gameWidth + bullet.height +bullet.width
+    || bullet.y < 0 - bullet.height - bullet.width
+    || bullet.y > gameHeight + bullet.height +bullet.width) {
+    bullet.destroy();
+  }
 }
 /*
 function Bullet(bulletGroup) {

@@ -10,7 +10,7 @@ function Game() {
 Game.prototype.start = function() {
   var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', {preload: preload, create: create, update: update, render: render});
   var cursors, fireButton;
-  var player, obstacle;
+  var player, weapon;
 
   function preload() {
     game.load.image('doge','assets/images/doge.jpg');
@@ -38,8 +38,12 @@ Game.prototype.start = function() {
     player = new Player(game);
     player.init();
 
+    weapon = new Weapon(game, player);
+
+    /*
     obstacle = new Obstacle(game, player);
     obstacle.init();
+    */
 
     cursors = game.input.keyboard.createCursorKeys();
     fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
@@ -58,8 +62,12 @@ Game.prototype.start = function() {
       player.moveDown();
     }
 
-    obstacle.changeFireDirection();
-    obstacle.weapon.fire();
+    //obstacle.changeFireDirection();
+    //obstacle.weapon.fire();
+    //obstacle.weapon.fireAtSprite(player.playerBody.limb.torso.sprite);
+
+    weapon.refresh();
+    weapon.fireToSprite([gameWidth,gameHeight/2], player.playerBody.limb.torso.sprite);
 
     /*
     if (fireButton.isDown)
@@ -70,6 +78,6 @@ Game.prototype.start = function() {
   }
 
   function render() {
-    game.debug.text( player.debug + obstacle.debug, 20, game.height - 20 );
+    game.debug.text( player.debug, 20, game.height - 20 );
   }
 }

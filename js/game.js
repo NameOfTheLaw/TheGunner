@@ -1,7 +1,7 @@
 var gravity = 100,
 gameWidth = 700,
 gameHeight = 400,
-playerSpeed = 80;
+playerSpeed = 200;
 
 function Game() {
 

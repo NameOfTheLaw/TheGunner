@@ -1,8 +1,9 @@
-function Player(game) {
+function Player(game, gameMode) {
   this.game = game;
-  this.playerBody;
-  this.collisionGroups;
-  this.debug = "ok";
+  this.gameMode = gameMode;
+  this.playerSpeed = 200;
+  this.playerBody = {};
+  this.collisionGroups = {};
 }
 
 Player.prototype.init = function () {
@@ -15,76 +16,78 @@ Player.prototype.init = function () {
         frame: "head.png",
         physics: "head",
         collisionGroup: "head",
-        collides: "torso"
+        collides: ["bullets", "torso"]
       },
       torso: {
         frame: "torso.png",
         physics: "torso",
-        collisionGroup: "torso"
+        collisionGroup: "torso",
+        collides: ["bullets"]
       },
       ltbutt: {
         frame: "butt.png",
         physics: "butt",
-        collisionGroup: "legs"
+        collisionGroup: "legs",
+        collides: ["bullets"]
       },
       rtbutt: {
         frame: "butt.png",
         physics: "butt",
-        collisionGroup: "legs"
+        collisionGroup: "legs",
+        collides: ["bullets"]
       },
       ltshin: {
         frame: "shin.png",
         physics: "shin",
-        collisionGroup: "legs"
+        collisionGroup: "legs",
+        collides: ["bullets"]
       },
       rtshin: {
         frame: "shin.png",
         physics: "shin",
-        collisionGroup: "legs"
+        collisionGroup: "legs",
+        collides: ["bullets"]
       },
       ltankle: {
         frame: "ankle.png",
         physics: "ankle",
-        collisionGroup: "legs"
+        collisionGroup: "legs",
+        collides: ["bullets"]
       },
       rtankle: {
         frame: "ankle.png",
         physics: "ankle",
-        collisionGroup: "legs"
+        collisionGroup: "legs",
+        collides: ["bullets"]
       },
       ltshoulder: {
         frame: "shoulder.png",
         physics: "shoulder",
-        collisionGroup: "hands"
+        collisionGroup: "hands",
+        collides: ["bullets"]
       },
       rtshoulder: {
         frame: "shoulder.png",
         physics: "shoulder",
-        collisionGroup: "hands"
+        collisionGroup: "hands",
+        collides: ["bullets"]
       },
       lthand: {
         frame: "hand.png",
         physics: "hand",
-        collisionGroup: "hands"
+        collisionGroup: "hands",
+        collides: ["bullets"]
       },
       rthand: {
         frame: "hand.png",
         physics: "hand",
-        collisionGroup: "hands"
+        collisionGroup: "hands",
+        collides: ["bullets"]
       }
     }
   }
-  var collisionGroups = {
-    torso: this.game.physics.p2.createCollisionGroup(),
-    hands: this.game.physics.p2.createCollisionGroup(),
-    head: this.game.physics.p2.createCollisionGroup(),
-    legs: this.game.physics.p2.createCollisionGroup()
-  }
 
-  //AFTER CREATING COLLISION GROUPS IT IS IMPORTANT TO UPDATE:
-  this.game.physics.p2.updateBoundsCollisionGroup();
-
-  var bodyParts, torso, lthand, rthand, ltshoulder, rtshoulder, head;
+  var bodyParts;
 
   bodyParts = this.game.add.group();
   bodyParts.enableBody = true;
@@ -93,10 +96,12 @@ Player.prototype.init = function () {
   for (var num in playerBody.limb) {
     var tempSprite = bodyParts.create(100, 200, playerBody.image);
     tempSprite.frameName = playerBody.limb[num].frame;
+    tempSprite.name = num;
     tempSprite.body.clearShapes();
   	tempSprite.body.loadPolygon(playerBody.physics, playerBody.limb[num].physics);
-    tempSprite.body.setCollisionGroup(collisionGroups[playerBody.limb[num].collisionGroup]);
-    if ("collides" in playerBody.limb[num]) tempSprite.body.collides(collisionGroups[playerBody.limb[num].collisionGroup]);
+    tempSprite.body.setCollisionGroup(this.gameMode.collisionGroups[playerBody.limb[num].collisionGroup]);
+    if ("collides" in playerBody.limb[num])
+      for (var i in playerBody.limb[num].collides) tempSprite.body.collides(this.gameMode.collisionGroups[playerBody.limb[num].collides[i]]);
     playerBody.limb[num].sprite = tempSprite;
   }
 
@@ -197,23 +202,22 @@ Player.prototype.init = function () {
   }
 
   this.playerBody = playerBody;
-  this.collisionGroups = collisionGroups;
 }
 
 Player.prototype.moveLeft = function()  {
-  this.playerBody.limb.torso.sprite.body.moveLeft(playerSpeed);
+  this.playerBody.limb.torso.sprite.body.moveLeft(this.playerSpeed);
 }
 
 Player.prototype.moveRight = function()  {
-  this.playerBody.limb.torso.sprite.body.moveRight(playerSpeed);
+  this.playerBody.limb.torso.sprite.body.moveRight(this.playerSpeed);
 }
 
 Player.prototype.moveDown = function()  {
-  this.playerBody.limb.torso.sprite.body.moveDown(playerSpeed);
+  this.playerBody.limb.torso.sprite.body.moveDown(this.playerSpeed);
 }
 
 Player.prototype.moveUp = function()  {
-  this.playerBody.limb.torso.sprite.body.moveUp(playerSpeed);
+  this.playerBody.limb.torso.sprite.body.moveUp(this.playerSpeed);
 }
 
 function createBodyConstraint(game, spriteA, pointA, spriteB, pointB, limitsB) {

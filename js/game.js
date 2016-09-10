@@ -1,21 +1,17 @@
 var gravity = 100,
 gameWidth = 700,
-gameHeight = 400,
-playerSpeed = 200;
+gameHeight = 400;
 
 function Game() {
-
 }
 
 Game.prototype.start = function() {
   var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '', {preload: preload, create: create, update: update, render: render});
-  var cursors, fireButton;
-  var player, weapon;
+  var gameMode = new MatrixP2(game);
 
   function preload() {
     game.load.image('doge','assets/images/doge.jpg');
     game.load.image('background','assets/images/background1.jpg');
-    //game.load.spritesheet('bullets','assets/images/bullets.svg', 12, 52, 4);
 
     game.load.atlas('player_atlas', 'assets/spritesheet/player_spritesheet.png', '/assets/spritesheet/player_spritesheet.xml', null, Phaser.Loader.TEXTURE_ATLAS_XML_STARLING);
     game.load.physics('playerPhysicsData', 'assets/physics/player_spritesheet.json');
@@ -35,49 +31,14 @@ Game.prototype.start = function() {
 
     var background = game.add.tileSprite(0, 0, gameWidth, gameHeight, 'background');
 
-    player = new Player(game);
-    player.init();
-
-    weapon = new Weapon(game, player);
-
-    /*
-    obstacle = new Obstacle(game, player);
-    obstacle.init();
-    */
-
-    cursors = game.input.keyboard.createCursorKeys();
-    fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+    gameMode.init();
   }
 
   function update() {
-    if (cursors.left.isDown) {
-      player.moveLeft();
-    } else if (cursors.right.isDown) {
-      player.moveRight();
-    }
-
-    if (cursors.up.isDown) {
-      player.moveUp();
-    } else if (cursors.down.isDown) {
-      player.moveDown();
-    }
-
-    //obstacle.changeFireDirection();
-    //obstacle.weapon.fire();
-    //obstacle.weapon.fireAtSprite(player.playerBody.limb.torso.sprite);
-
-    weapon.refresh();
-    weapon.fireToSprite([gameWidth,gameHeight/2], player.playerBody.limb.torso.sprite);
-
-    /*
-    if (fireButton.isDown)
-    {
-        obstacle.weapon.fire();
-    }
-    */
+    gameMode.tick();
   }
 
   function render() {
-    game.debug.text( player.debug, 20, game.height - 20 );
+    game.debug.text(gameMode.weapon.debug + " | " + gameMode.debug, 20, game.height - 20 );
   }
 }

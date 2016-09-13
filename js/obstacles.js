@@ -1,7 +1,8 @@
 function Weapon(game, gameMode, options) {
   var defaultOptions = {
-    weaponSpeed: 3000,
-    bulletSpeed: 170
+    weaponSpeed: 1500,
+    bulletSpeed: 170,
+    bulletScale: 0.5
   }
   for(var option in defaultOptions) this[option] = options && options[option]!==undefined ? options[option] : defaultOptions[option];
   this.game = game;
@@ -11,10 +12,19 @@ function Weapon(game, gameMode, options) {
   this.defaultFrom = [gameWidth, gameHeight/2];
   this.bulletsInfo = {
     image: "bullets_atlas",
-    frame: {
-      frame1: "bullet1.png",
-      frame2: "bullet2.png"
+    physics: "gunPhysicsData",
+    scaledPhysics: "scaledGunPhysicsData",
+    ammo: {
+      bullet1: {
+        shape: "bullet1.png",
+        physics: "bullet1",
+      },
+      bullet2: {
+        shape: "bullet2.png",
+        physics: "bullet2",
+      }
     }
+
   }
 
   this.bulletGroup = this.game.add.group();
@@ -40,18 +50,21 @@ Weapon.prototype.fire = function (to, from) {
 
   var bullet = this.bulletGroup.create(from[0], from[1], this.bulletsInfo.image);
   var bulletAngle = Phaser.Math.angleBetween(to[0],  to[1], from[0],  from[1]);
-  bullet.frame = this.bulletsInfo.frame.frame1;
-  //bullet.body.rotation = Phaser.Math.radToDeg(bulletAngle);
+  bullet.frame = this.bulletsInfo.ammo.bullet1.shape;
   bullet.body.rotation = bulletAngle;
   bullet.body.kinematic = true;
   bullet.body.velocity.y = -this.bulletSpeed * Math.sin(bulletAngle);
   bullet.body.velocity.x = -this.bulletSpeed * Math.cos(bulletAngle);
+  bullet.name = "bullet";
+  bullet.scale.setTo(this.bulletScale,this.bulletScale);
+  scalePolygon(this.game, this.bulletsInfo.physics, this.bulletsInfo.scaledPhysics, this.bulletsInfo.ammo.bullet1.physics, this.bulletScale);
+  bullet.body.clearShapes();
+  bullet.body.loadPolygon("scaledGunPhysicsData", "bullet1");
   bullet.body.setCollisionGroup(this.gameMode.collisionGroups.bullets);
-  var weapon = this;
   for (var colGroup in this.gameMode.collisionGroups)
     if (colGroup != "bullets") {
       bullet.body.collides(this.gameMode.collisionGroups[colGroup]);
-      bullet.body.createGroupCallback(this.gameMode.collisionGroups[colGroup], this.hitTheBody, this);
+      //bullet.body.createGroupCallback(this.gameMode.collisionGroups[colGroup], this.hitTheBody, this);
     }
 
   this.nextShot = this.game.time.now + this.weaponSpeed;
@@ -75,13 +88,12 @@ Weapon.prototype.destoyBullet = function (bullet) {
     || bullet.x > gameWidth + bullet.height + bullet.width
     || bullet.y < 0 - bullet.height - bullet.width
     || bullet.y > gameHeight + bullet.height +bullet.width) {
-    //bullet.destroy();
-    bullet.kill();
+    bullet.destroy();
   }
 }
 
 Weapon.prototype.hitTheBody = function (body1, body2) {
-  this.debug = body2.sprite.name + " was hitted";
+  debug = body2.sprite.name + " was hitted";
   body1.sprite.kill();
 }
 
@@ -99,4 +111,11 @@ Weapon.prototype.isReloading = function () {
   } else {
     return false;
   }
+}
+
+Weapon.prototype.reinit = function () {
+  this.bulletGroup.destroy();
+  this.bulletGroup = this.game.add.group();
+  this.bulletGroup.enableBody = true;
+  this.bulletGroup.physicsBodyType = Phaser.Physics.P2JS;
 }

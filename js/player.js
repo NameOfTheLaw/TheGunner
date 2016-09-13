@@ -2,8 +2,10 @@ function Player(game, gameMode) {
   this.game = game;
   this.gameMode = gameMode;
   this.playerSpeed = 200;
+  this.playerScale = 1;
   this.playerBody = {};
   this.collisionGroups = {};
+  this.playerConstraints = [];
 }
 
 Player.prototype.init = function () {
@@ -11,82 +13,94 @@ Player.prototype.init = function () {
   var playerBody = {
     image: "player_atlas",
     physics: "playerPhysicsData",
+    scaledPhysics: "scaledPlayerPhysicsData",
     limb: {
       head: {
         frame: "head.png",
         physics: "head",
         collisionGroup: "head",
-        collides: ["bullets", "torso"]
+        collides: ["bullets", "torso"],
+        damage: 40
       },
       torso: {
         frame: "torso.png",
         physics: "torso",
         collisionGroup: "torso",
-        collides: ["bullets"]
+        collides: ["bullets"],
+        damage: 20
       },
       ltbutt: {
         frame: "butt.png",
         physics: "butt",
         collisionGroup: "legs",
-        collides: ["bullets"]
+        collides: ["bullets"],
+        damage: 10
       },
       rtbutt: {
         frame: "butt.png",
         physics: "butt",
         collisionGroup: "legs",
-        collides: ["bullets"]
+        collides: ["bullets"],
+        damage: 10
       },
       ltshin: {
         frame: "shin.png",
         physics: "shin",
         collisionGroup: "legs",
-        collides: ["bullets"]
+        collides: ["bullets"],
+        damage: 10
       },
       rtshin: {
         frame: "shin.png",
         physics: "shin",
         collisionGroup: "legs",
-        collides: ["bullets"]
+        collides: ["bullets"],
+        damage: 10
       },
       ltankle: {
         frame: "ankle.png",
         physics: "ankle",
         collisionGroup: "legs",
-        collides: ["bullets"]
+        collides: ["bullets"],
+        damage: 5
       },
       rtankle: {
         frame: "ankle.png",
         physics: "ankle",
         collisionGroup: "legs",
-        collides: ["bullets"]
+        collides: ["bullets"],
+        damage: 5
       },
       ltshoulder: {
         frame: "shoulder.png",
         physics: "shoulder",
         collisionGroup: "hands",
-        collides: ["bullets"]
+        collides: ["bullets"],
+        damage: 10
       },
       rtshoulder: {
         frame: "shoulder.png",
         physics: "shoulder",
         collisionGroup: "hands",
-        collides: ["bullets"]
+        collides: ["bullets"],
+        damage: 10
       },
       lthand: {
         frame: "hand.png",
         physics: "hand",
         collisionGroup: "hands",
-        collides: ["bullets"]
+        collides: ["bullets"],
+        damage: 5
       },
       rthand: {
         frame: "hand.png",
         physics: "hand",
         collisionGroup: "hands",
-        collides: ["bullets"]
+        collides: ["bullets"],
+        damage: 5
       }
     }
   }
-
   var bodyParts;
 
   bodyParts = this.game.add.group();
@@ -97,11 +111,17 @@ Player.prototype.init = function () {
     var tempSprite = bodyParts.create(100, 200, playerBody.image);
     tempSprite.frameName = playerBody.limb[num].frame;
     tempSprite.name = num;
+    tempSprite.scale.setTo(this.playerScale,this.playerScale);
+    scalePolygon(this.game, playerBody.physics, playerBody.scaledPhysics, playerBody.limb[num].physics, this.playerScale);
     tempSprite.body.clearShapes();
-  	tempSprite.body.loadPolygon(playerBody.physics, playerBody.limb[num].physics);
+  	tempSprite.body.loadPolygon(playerBody.scaledPhysics, playerBody.limb[num].physics);
     tempSprite.body.setCollisionGroup(this.gameMode.collisionGroups[playerBody.limb[num].collisionGroup]);
     if ("collides" in playerBody.limb[num])
-      for (var i in playerBody.limb[num].collides) tempSprite.body.collides(this.gameMode.collisionGroups[playerBody.limb[num].collides[i]]);
+      for (var i in playerBody.limb[num].collides) {
+        tempSprite.body.createGroupCallback(this.gameMode.collisionGroups[playerBody.limb[num].collides[i]], this.gotHit, this);
+        tempSprite.body.collides(this.gameMode.collisionGroups[playerBody.limb[num].collides[i]])
+      }
+
     playerBody.limb[num].sprite = tempSprite;
   }
 
@@ -198,10 +218,19 @@ Player.prototype.init = function () {
 
   for (var num in playerBody.constraint) {
     var element = playerBody.constraint[num];
-    createBodyConstraint(this.game, playerBody.limb[element.bodyA].sprite, element.pointA, playerBody.limb[element.bodyB].sprite, element.pointB, [element.lowerLimit, element.upperLimit]);
+    var constraint = createBodyConstraint(
+      this.game,
+      playerBody.limb[element.bodyA].sprite,
+      element.pointA,
+      playerBody.limb[element.bodyB].sprite,
+      element.pointB,
+      [element.lowerLimit, element.upperLimit]
+    );
+    this.playerConstraints.push(constraint);
   }
 
   this.playerBody = playerBody;
+  this.bodyParts = bodyParts;
 }
 
 Player.prototype.moveLeft = function()  {
@@ -220,7 +249,39 @@ Player.prototype.moveUp = function()  {
   this.playerBody.limb.torso.sprite.body.moveUp(this.playerSpeed);
 }
 
-function createBodyConstraint(game, spriteA, pointA, spriteB, pointB, limitsB) {
-  var constraint = game.physics.p2.createRevoluteConstraint(spriteA, pointA, spriteB, pointB);
-  if (limitsB) constraint.setLimits(limitsB[0], limitsB[1]);
+Player.prototype.atttendHealth = function(health) {
+  this.health = health;
+}
+
+Player.prototype.gotHit = function (body1, body2) {
+  if (body1.sprite.name == "head")
+    this.game.camera.shake(0.01, 300)
+  else
+    this.game.camera.shake(0.001, 300);
+  //TODO: баг, при которой одна пуля дамажит дважды. Можно решить добавлением
+  //продамаживших пуль в стек с последующей проверкой новых попаданий на повторы.
+  this.health.damage(this.playerBody.limb[body1.sprite.name].damage);
+  body2.sprite.kill();
+  //debug = "hit in " + body1.sprite.name + " (-" + this.playerBody.limb[body1.sprite.name].damage + ")";
+}
+
+/*
+Player.prototype.kill = function () {
+  //TODO: removes constraints though array still the same
+  for (constraint in this.playerConstraints)
+    this.game.physics.p2.removeConstraint(constraint);
+  //this.bodyParts.forEach(this.killBodyPart, this, true);
+}
+
+Player.prototype.killBodyPart = function (part) {
+  part.body.clearCollision();
+  //BUG. NEXT LINE CRASH EVERITHING.
+  part.kill();
+}
+*/
+
+Player.prototype.reinit = function () {
+  this.playerBody.limb.torso.sprite.x = 100;
+  this.playerBody.limb.torso.sprite.y = 200;
+  this.health.refresh();
 }

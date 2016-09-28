@@ -10,22 +10,7 @@ function Weapon(game, gameMode, options) {
   this.debug = "no hit";
   this.nextShot = 0;
   this.defaultFrom = [gameWidth, gameHeight/2];
-  this.bulletsInfo = {
-    image: "bullets_atlas",
-    physics: "gunPhysicsData",
-    scaledPhysics: "scaledGunPhysicsData",
-    ammo: {
-      bullet1: {
-        shape: "bullet1.png",
-        physics: "bullet1",
-      },
-      bullet2: {
-        shape: "bullet2.png",
-        physics: "bullet2",
-      }
-    }
-
-  }
+  this.bulletsInfo = this.game.cache.getJSON('bulletsInfo');
 
   this.bulletGroup = this.game.add.group();
   this.bulletGroup.enableBody = true;
@@ -50,14 +35,14 @@ Weapon.prototype.fire = function (to, from) {
 
   var bullet = this.bulletGroup.create(from[0], from[1], this.bulletsInfo.image);
   var bulletAngle = Phaser.Math.angleBetween(to[0],  to[1], from[0],  from[1]);
-  bullet.frame = this.bulletsInfo.ammo.bullet1.shape;
+  bullet.frame = this.bulletsInfo.ammo[0].shape;
   bullet.body.rotation = bulletAngle;
   bullet.body.kinematic = true;
   bullet.body.velocity.y = -this.bulletSpeed * Math.sin(bulletAngle);
   bullet.body.velocity.x = -this.bulletSpeed * Math.cos(bulletAngle);
   bullet.name = "bullet";
   bullet.scale.setTo(this.bulletScale,this.bulletScale);
-  scalePolygon(this.game, this.bulletsInfo.physics, this.bulletsInfo.scaledPhysics, this.bulletsInfo.ammo.bullet1.physics, this.bulletScale);
+  scalePolygon(this.game, this.bulletsInfo.physics, this.bulletsInfo.scaledPhysics, this.bulletsInfo.ammo[0].physics, this.bulletScale);
   bullet.body.clearShapes();
   bullet.body.loadPolygon("scaledGunPhysicsData", "bullet1");
   bullet.body.setCollisionGroup(this.gameMode.collisionGroups.bullets);

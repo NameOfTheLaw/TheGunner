@@ -17,10 +17,14 @@ Game.prototype.play = function() {
 
     game.load.spritesheet('start_button','assets/spritesheet/start_button.png', 200, 80);
     game.load.spritesheet('restart_button','assets/spritesheet/restart_button.png', 200, 80);
+
     game.load.atlas('player_atlas', 'assets/spritesheet/player_spritesheet.png', '/assets/spritesheet/player_spritesheet.xml', null, Phaser.Loader.TEXTURE_ATLAS_XML_STARLING);
     game.load.physics('playerPhysicsData', 'assets/physics/player_spritesheet.json');
+    game.load.json('playerBody', 'assets/spritesheet/player_configuration.json');
+
     game.load.atlas('bullets_atlas', 'assets/spritesheet/gun_spritesheet.png', '/assets/spritesheet/gun_spritesheet.xml', null, Phaser.Loader.TEXTURE_ATLAS_XML_STARLING);
     game.load.physics('gunPhysicsData', 'assets/physics/gun_spritesheet.json');
+    game.load.json('bulletsInfo', 'assets/spritesheet/gun_configuration.json');
   }
 
   function create() {

@@ -10,97 +10,7 @@ function Player(game, gameMode) {
 
 Player.prototype.init = function () {
 
-  var playerBody = {
-    image: "player_atlas",
-    physics: "playerPhysicsData",
-    scaledPhysics: "scaledPlayerPhysicsData",
-    limb: {
-      head: {
-        frame: "head.png",
-        physics: "head",
-        collisionGroup: "head",
-        collides: ["bullets", "torso"],
-        damage: 40
-      },
-      torso: {
-        frame: "torso.png",
-        physics: "torso",
-        collisionGroup: "torso",
-        collides: ["bullets"],
-        damage: 20
-      },
-      ltbutt: {
-        frame: "butt.png",
-        physics: "butt",
-        collisionGroup: "legs",
-        collides: ["bullets"],
-        damage: 10
-      },
-      rtbutt: {
-        frame: "butt.png",
-        physics: "butt",
-        collisionGroup: "legs",
-        collides: ["bullets"],
-        damage: 10
-      },
-      ltshin: {
-        frame: "shin.png",
-        physics: "shin",
-        collisionGroup: "legs",
-        collides: ["bullets"],
-        damage: 10
-      },
-      rtshin: {
-        frame: "shin.png",
-        physics: "shin",
-        collisionGroup: "legs",
-        collides: ["bullets"],
-        damage: 10
-      },
-      ltankle: {
-        frame: "ankle.png",
-        physics: "ankle",
-        collisionGroup: "legs",
-        collides: ["bullets"],
-        damage: 5
-      },
-      rtankle: {
-        frame: "ankle.png",
-        physics: "ankle",
-        collisionGroup: "legs",
-        collides: ["bullets"],
-        damage: 5
-      },
-      ltshoulder: {
-        frame: "shoulder.png",
-        physics: "shoulder",
-        collisionGroup: "hands",
-        collides: ["bullets"],
-        damage: 10
-      },
-      rtshoulder: {
-        frame: "shoulder.png",
-        physics: "shoulder",
-        collisionGroup: "hands",
-        collides: ["bullets"],
-        damage: 10
-      },
-      lthand: {
-        frame: "hand.png",
-        physics: "hand",
-        collisionGroup: "hands",
-        collides: ["bullets"],
-        damage: 5
-      },
-      rthand: {
-        frame: "hand.png",
-        physics: "hand",
-        collisionGroup: "hands",
-        collides: ["bullets"],
-        damage: 5
-      }
-    }
-  }
+  var playerBody = this.game.cache.getJSON('playerBody');
   var bodyParts;
 
   bodyParts = this.game.add.group();
@@ -125,106 +35,27 @@ Player.prototype.init = function () {
     playerBody.limb[num].sprite = tempSprite;
   }
 
-  playerBody.constraint = {
-    constraint1: {
-      bodyA: "torso",
-      pointA: [0, - playerBody.limb["torso"].sprite.height/2],
-      bodyB: "head",
-      pointB: [0, playerBody.limb["head"].sprite.height/2 + 7],
-      lowerLimit: Phaser.Math.degToRad(-10),
-      upperLimit: Phaser.Math.degToRad(10)
-    },
-    constraint2: {
-      bodyA: "torso",
-      pointA: [0, - playerBody.limb["torso"].sprite.height/2 + 20],
-      bodyB: "ltshoulder",
-      pointB: [0, -playerBody.limb["ltshoulder"].sprite.height/2 + 10],
-      lowerLimit: Phaser.Math.degToRad(-140),
-      upperLimit: Phaser.Math.degToRad(40)
-    },
-    constraint3: {
-      bodyA: "torso",
-      pointA: [0, - playerBody.limb["torso"].sprite.height/2 + 20],
-      bodyB: "rtshoulder",
-      pointB: [0, -playerBody.limb["rtshoulder"].sprite.height/2 + 10],
-      lowerLimit: Phaser.Math.degToRad(-140),
-      upperLimit: Phaser.Math.degToRad(40)
-    },
-    constraint4: {
-      bodyA: "torso",
-      pointA: [0, playerBody.limb["torso"].sprite.height/2 - 20],
-      bodyB: "rtbutt",
-      pointB: [0, -playerBody.limb["rtbutt"].sprite.height/2 + 10],
-      lowerLimit: Phaser.Math.degToRad(-90),
-      upperLimit: Phaser.Math.degToRad(90)
-    },
-    constraint5: {
-      bodyA: "torso",
-      pointA: [0, playerBody.limb["torso"].sprite.height/2 - 20],
-      bodyB: "ltbutt",
-      pointB: [0, -playerBody.limb["ltbutt"].sprite.height/2 + 10],
-      lowerLimit: Phaser.Math.degToRad(-90),
-      upperLimit: Phaser.Math.degToRad(90)
-    },
-    constraint6: {
-      bodyA: "ltshoulder",
-      pointA: [0, playerBody.limb["ltshoulder"].sprite.height/2 - 10],
-      bodyB: "lthand",
-      pointB: [0, -playerBody.limb["lthand"].sprite.height/2 + 10],
-      lowerLimit: Phaser.Math.degToRad(-140),
-      upperLimit: Phaser.Math.degToRad(0)
-    },
-    constraint7: {
-      bodyA: "rtshoulder",
-      pointA: [0, playerBody.limb["rtshoulder"].sprite.height/2 - 10],
-      bodyB: "rthand",
-      pointB: [0, -playerBody.limb["rthand"].sprite.height/2 + 10],
-      lowerLimit: Phaser.Math.degToRad(-140),
-      upperLimit: Phaser.Math.degToRad(0)
-    },
-    constraint8: {
-      bodyA: "rtbutt",
-      pointA: [0, playerBody.limb["rtbutt"].sprite.height/2 - 10],
-      bodyB: "rtshin",
-      pointB: [0, -playerBody.limb["rtshin"].sprite.height/2 + 10],
-      lowerLimit: Phaser.Math.degToRad(-20),
-      upperLimit: Phaser.Math.degToRad(90)
-    },
-    constraint9: {
-      bodyA: "ltbutt",
-      pointA: [0, playerBody.limb["ltbutt"].sprite.height/2 - 10],
-      bodyB: "ltshin",
-      pointB: [0, -playerBody.limb["ltshin"].sprite.height/2 + 10],
-      lowerLimit: Phaser.Math.degToRad(-20),
-      upperLimit: Phaser.Math.degToRad(90)
-    },
-    constraint10: {
-      bodyA: "ltshin",
-      pointA: [0, playerBody.limb["ltshin"].sprite.height/2 - 5],
-      bodyB: "ltankle",
-      pointB: [- playerBody.limb["ltankle"].sprite.width/2 + 10, -playerBody.limb["ltankle"].sprite.height/2 + 5],
-      lowerLimit: Phaser.Math.degToRad(-20),
-      upperLimit: Phaser.Math.degToRad(40)
-    },
-    constraint11: {
-      bodyA: "rtshin",
-      pointA: [0, playerBody.limb["rtshin"].sprite.height/2 - 5],
-      bodyB: "rtankle",
-      pointB: [- playerBody.limb["rtankle"].sprite.width/2 + 10, -playerBody.limb["rtankle"].sprite.height/2 + 5],
-      lowerLimit: Phaser.Math.degToRad(-20),
-      upperLimit: Phaser.Math.degToRad(40)
-    }
-  }
-
   for (var num in playerBody.constraint) {
     var element = playerBody.constraint[num];
+    element.pointA = [
+      element.pointA[0]*playerBody.limb[element.bodyA].sprite.width + element.transitionPointA[0],
+      element.pointA[1]*playerBody.limb[element.bodyA].sprite.height + element.transitionPointA[1]
+    ];
+    element.pointB = [
+      element.pointB[0]*playerBody.limb[element.bodyB].sprite.width + element.transitionPointB[0],
+      element.pointB[1]*playerBody.limb[element.bodyB].sprite.height + element.transitionPointB[1]
+    ];
+    element.limits = [
+      Phaser.Math.degToRad(element.limits[0]),
+      Phaser.Math.degToRad(element.limits[1])
+    ];
     var constraint = createBodyConstraint(
       this.game,
       playerBody.limb[element.bodyA].sprite,
       element.pointA,
       playerBody.limb[element.bodyB].sprite,
       element.pointB,
-      [element.lowerLimit, element.upperLimit]
+      element.limits
     );
     this.playerConstraints.push(constraint);
   }
@@ -249,7 +80,7 @@ Player.prototype.moveUp = function()  {
   this.playerBody.limb.torso.sprite.body.moveUp(this.playerSpeed);
 }
 
-Player.prototype.atttendHealth = function(health) {
+Player.prototype.attendHealth = function(health) {
   this.health = health;
 }
 

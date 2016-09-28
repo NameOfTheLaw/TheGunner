@@ -42,7 +42,7 @@ MatrixP1.prototype.init = function() {
   this.player = new Player(this.game, this);
   this.player.init();
   this.health = new HealthBar({total: 200});
-  this.player.atttendHealth(this.health);
+  this.player.attendHealth(this.health);
   this.weapon = new Weapon(this.game, this);
 
   this.cursors = this.game.input.keyboard.createCursorKeys();

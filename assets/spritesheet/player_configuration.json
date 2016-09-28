@@ -1,0 +1,192 @@
+{
+  "image": "player_atlas",
+  "physics": "playerPhysicsData",
+  "scaledPhysics": "scaledPlayerPhysicsData",
+  "limb": {
+    "head": {
+      "frame": "head.png",
+      "physics": "head",
+      "collisionGroup": "head",
+      "collides": ["bullets", "torso"],
+      "damage": 40
+    },
+    "torso": {
+      "frame": "torso.png",
+      "physics": "torso",
+      "collisionGroup": "torso",
+      "collides": ["bullets"],
+      "damage": 20
+    },
+    "ltbutt": {
+      "frame": "butt.png",
+      "physics": "butt",
+      "collisionGroup": "legs",
+      "collides": ["bullets"],
+      "damage": 10
+    },
+    "rtbutt": {
+      "frame": "butt.png",
+      "physics": "butt",
+      "collisionGroup": "legs",
+      "collides": ["bullets"],
+      "damage": 10
+    },
+    "ltshin": {
+      "frame": "shin.png",
+      "physics": "shin",
+      "collisionGroup": "legs",
+      "collides": ["bullets"],
+      "damage": 10
+    },
+    "rtshin": {
+      "frame": "shin.png",
+      "physics": "shin",
+      "collisionGroup": "legs",
+      "collides": ["bullets"],
+      "damage": 10
+    },
+    "ltankle": {
+      "frame": "ankle.png",
+      "physics": "ankle",
+      "collisionGroup": "legs",
+      "collides": ["bullets"],
+      "damage": 5
+    },
+    "rtankle": {
+      "frame": "ankle.png",
+      "physics": "ankle",
+      "collisionGroup": "legs",
+      "collides": ["bullets"],
+      "damage": 5
+    },
+    "ltshoulder": {
+      "frame": "shoulder.png",
+      "physics": "shoulder",
+      "collisionGroup": "hands",
+      "collides": ["bullets"],
+      "damage": 10
+    },
+    "rtshoulder": {
+      "frame": "shoulder.png",
+      "physics": "shoulder",
+      "collisionGroup": "hands",
+      "collides": ["bullets"],
+      "damage": 10
+    },
+    "lthand": {
+      "frame": "hand.png",
+      "physics": "hand",
+      "collisionGroup": "hands",
+      "collides": ["bullets"],
+      "damage": 5
+    },
+    "rthand": {
+      "frame": "hand.png",
+      "physics": "hand",
+      "collisionGroup": "hands",
+      "collides": ["bullets"],
+      "damage": 5
+    }
+  },
+  "constraint": [
+    {
+      "bodyA": "torso",
+      "pointA": [0, -0.5],
+      "transitionPointA": [0, 0],
+      "bodyB": "head",
+      "pointB": [0, 0.5],
+      "transitionPointB": [0, 7],
+      "limits": [-10, 10]
+    },
+    {
+      "bodyA": "torso",
+      "pointA": [0, -0.5],
+      "transitionPointA": [0, 20],
+      "bodyB": "ltshoulder",
+      "pointB": [0, -0.5],
+      "transitionPointB": [0, 10],
+      "limits": [-140, 40]
+    },
+    {
+      "bodyA": "torso",
+      "pointA": [0, -0.5],
+      "transitionPointA": [0, 20],
+      "bodyB": "rtshoulder",
+      "pointB": [0, -0.5],
+      "transitionPointB": [0, 10],
+      "limits": [-140, 40]
+    },
+    {
+      "bodyA": "torso",
+      "pointA": [0, 0.5],
+      "transitionPointA": [0, -20],
+      "bodyB": "rtbutt",
+      "pointB": [0, -0.5],
+      "transitionPointB": [0, 10],
+      "limits": [-90, 90]
+    },
+    {
+      "bodyA": "torso",
+      "pointA": [0, 0.5],
+      "transitionPointA": [0, -20],
+      "bodyB": "ltbutt",
+      "pointB": [0, -0.5],
+      "transitionPointB": [0, 10],
+      "limits": [-90, 90]
+    },
+    {
+      "bodyA": "ltshoulder",
+      "pointA": [0, 0.5],
+      "transitionPointA": [0, -10],
+      "bodyB": "lthand",
+      "pointB": [0, -0.5],
+      "transitionPointB": [0, 10],
+      "limits": [-140, 0]
+    },
+    {
+      "bodyA": "rtshoulder",
+      "pointA": [0, 0.5],
+      "transitionPointA": [0, -10],
+      "bodyB": "rthand",
+      "pointB": [0, -0.5],
+      "transitionPointB": [0, 10],
+      "limits": [-140, 0]
+    },
+    {
+      "bodyA": "rtbutt",
+      "pointA": [0, 0.5],
+      "transitionPointA": [0, -10],
+      "bodyB": "rtshin",
+      "pointB": [0, -0.5],
+      "transitionPointB": [0, 10],
+      "limits": [-20, 90]
+    },
+    {
+      "bodyA": "ltbutt",
+      "pointA": [0, 0.5],
+      "transitionPointA": [0, -10],
+      "bodyB": "ltshin",
+      "pointB": [0, -0.5],
+      "transitionPointB": [0, 10],
+      "limits": [-20, 90]
+    },
+    {
+      "bodyA": "ltshin",
+      "pointA": [0, 0.5],
+      "transitionPointA": [0, -5],
+      "bodyB": "ltankle",
+      "pointB": [-0.5, -0.5],
+      "transitionPointB": [10, 5],
+      "limits": [-20, 40]
+    },
+    {
+      "bodyA": "rtshin",
+      "pointA": [0, 0.5],
+      "transitionPointA": [0, -5],
+      "bodyB": "rtankle",
+      "pointB": [-0.5, -0.5],
+      "transitionPointB": [10, 5],
+      "limits": [-20, 40]
+    }
+  ]
+}

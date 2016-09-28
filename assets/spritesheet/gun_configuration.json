@@ -1,0 +1,15 @@
+{
+  "image": "bullets_atlas",
+  "physics": "gunPhysicsData",
+  "scaledPhysics": "scaledGunPhysicsData",
+  "ammo": [
+    {
+      "shape": "bullet1.png",
+      "physics": "bullet1"
+    },
+    {
+      "shape": "bullet2.png",
+      "physics": "bullet2"
+    }
+  ]
+}

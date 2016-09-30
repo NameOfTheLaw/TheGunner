@@ -33,6 +33,9 @@ Player.prototype.init = function () {
       }
 
     playerBody.limb[num].sprite = tempSprite;
+    if (num == playerBody.anchorLimb) {
+      this.anchorSprite = playerBody.limb[num].sprite;
+    }
   }
 
   for (var num in playerBody.constraint) {
@@ -89,10 +92,12 @@ Player.prototype.gotHit = function (body1, body2) {
     this.game.camera.shake(0.01, 300)
   else
     this.game.camera.shake(0.001, 300);
-  //TODO: баг, при которой одна пуля дамажит дважды. Можно решить добавлением
-  //продамаживших пуль в стек с последующей проверкой новых попаданий на повторы.
-  this.health.damage(this.playerBody.limb[body1.sprite.name].damage);
-  body2.sprite.kill();
+  this.game.camera.flash(0xff0000, 300);
+  if (!body2.sprite.hitted) {
+    body2.sprite.hitted = true;
+    this.health.damage(this.playerBody.limb[body1.sprite.name].damage);
+    body2.sprite.kill();
+  }
   //debug = "hit in " + body1.sprite.name + " (-" + this.playerBody.limb[body1.sprite.name].damage + ")";
 }
 

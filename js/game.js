@@ -1,8 +1,9 @@
 var gravity = 200,
-gameWidth = 700,
-gameHeight = 400,
+gameWidth = 780,
+gameHeight = 480,
 debug = "",
-gameInfo = "";
+gameInfo = "",
+roomScale = 1.7;
 
 function Game() {
 }
@@ -38,8 +39,13 @@ Game.prototype.play = function() {
     //background.tileScale.x = 0.2;
     //background.tileScale.y = 0.2;
 
-    var background = game.add.tileSprite(0, 0, gameWidth, gameHeight, 'background');
-    this.startButton = game.add.button(game.world.centerX, game.world.centerY, 'start_button', startGame, this, 1, 0, 2);
+    var background = game.add.tileSprite(0, 0, gameWidth*roomScale, gameHeight*roomScale, 'background');
+
+    game.world.setBounds(0, 0, gameWidth*roomScale, gameHeight*roomScale);
+
+    //this.startButton = game.add.button(game.world.centerX, game.world.centerY, 'start_button', startGame, this, 1, 0, 2);
+    this.startButton = game.add.button(gameWidth/2, gameHeight/2, 'start_button', startGame, this, 1, 0, 2);
+    this.startButton.fixedToCamera = true;
     //this.startButton.inputEnabled = true;
     //this.startButton.events.onInputDown.add(this.play, {game: this});
     this.startButton.anchor.x = 0.5;
@@ -52,22 +58,11 @@ Game.prototype.play = function() {
   function update() {
     if (!gameMode.isOver()) {
       if (gameMode.isStarted()) {
-        gameMode.tick();
+        gameMode.update();
       }
     } else if (this.restartButton === undefined || !this.restartButton.alive) {
-      /*
-      var text = game.add.text(game.world.centerX, game.world.centerY, "GAME OVER, LOSER",
-        {
-          font: "bold 20px Arial",
-          fill: "#222",
-          boundsAlignH: "center",
-          boundsAlignV: "middle"
-        });
-      text.anchor.x = 0.5;
-      text.anchor.y = 0.5;
-      */
-
-      this.restartButton = game.add.button(game.world.centerX, game.world.centerY, 'restart_button', restartGame, this, 1, 0, 2);
+      this.restartButton = game.add.button(gameWidth/2, gameHeight/2, 'restart_button', restartGame, this, 1, 0, 2);
+      this.restartButton.fixedToCamera = true;
       this.restartButton.anchor.x = 0.5;
       this.restartButton.anchor.y = 0.5;
     }

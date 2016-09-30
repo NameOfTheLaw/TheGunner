@@ -2,10 +2,10 @@ body
 {
   background: #111;
 }
-.game-title{
+.main-title{
   color: #fff;
   text-align: center;
-  font-family: monospace;
+  font-family: sans-serif;
 }
 canvas{
   display: inline-block;

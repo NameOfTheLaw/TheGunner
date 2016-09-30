@@ -1,10 +1,6 @@
 function GameMode() {
 }
 
-GameMode.prototype.tick = function () {
-  this.update();
-}
-
 GameMode.prototype.isOver = function () {
   return this.gameOver;
 }
@@ -44,6 +40,14 @@ MatrixP1.prototype.init = function() {
   this.health = new HealthBar({total: 200});
   this.player.attendHealth(this.health);
   this.weapon = new Weapon(this.game, this);
+  this.weapon.showWarnings = true;
+  this.weapon.aimTo(this.player.anchorSprite);
+
+  //The smaller the value, the smooth the camera
+  this.game.camera.follow(this.player.anchorSprite, Phaser.Camera.FOLLOW_LOCKON, 0.07, 0.07);
+  //In the rectangle camera'll not follow the sprite
+  this.game.camera.deadzone = new Phaser.Rectangle(150, 150, gameWidth - 300, gameHeight - 300);
+  //this.game.camera.setSize(gameWidth, gameHeight/2);
 
   this.cursors = this.game.input.keyboard.createCursorKeys();
   this.mouse = this.game.input.activePointer;
@@ -53,7 +57,6 @@ MatrixP1.prototype.init = function() {
 MatrixP1.prototype.update = function() {
   //take a fire
   this.weapon.refresh();
-  this.weapon.aimTo(this.player.playerBody.limb.torso.sprite);
   this.weapon.fire();
 
   //take moves

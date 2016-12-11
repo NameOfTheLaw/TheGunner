@@ -1,7 +1,6 @@
 {
-  "image": "bullets_atlas",
-  "physics": "gunPhysicsData",
-  "scaledPhysics": "scaledGunPhysicsData",
+  "collisionGroup": "bullets",
+  "collides" : [],
   "ammo": [
     {
       "shape": "bullet1.png",

@@ -2,11 +2,12 @@ function Weapon(game, gameMode, options) {
   var defaultOptions = {
     weaponSpeed: 1500,
     bulletSpeed: 170,
-    bulletScale: 0.6,
+    bulletScale: 0.7,
     warningColor: 0xee0000,
     warningSize: 20
   }
   for(var option in defaultOptions) this[option] = options && options[option]!==undefined ? options[option] : defaultOptions[option];
+
   this.game = game;
   this.gameMode = gameMode;
   this.debug = "no hit";
@@ -14,7 +15,7 @@ function Weapon(game, gameMode, options) {
   this.nextShot = 0;
   //this.defaultFrom = [gameWidth, gameHeight/2];
   this.defaultFrom = [this.game.world.width, this.game.world.height/2]
-  this.bulletsInfo = this.game.cache.getJSON('bulletsInfo');
+  this.bulletsInfo = this.game.cache.getJSON(this.gameMode.gunConfig.config);
 
   this.bulletGroup = this.game.add.group();
   this.bulletGroup.enableBody = true;
@@ -37,7 +38,7 @@ Weapon.prototype.fire = function (to, from) {
       return false;
     }
 
-  var bullet = this.bulletGroup.create(from[0], from[1], this.bulletsInfo.image);
+  var bullet = this.bulletGroup.create(from[0], from[1], this.gameMode.gunConfig.ss);
   var bulletAngle = Phaser.Math.angleBetween(to[0],  to[1], from[0],  from[1]);
   bullet.frame = this.bulletsInfo.ammo[0].shape;
   bullet.body.rotation = bulletAngle;
@@ -46,9 +47,9 @@ Weapon.prototype.fire = function (to, from) {
   bullet.body.velocity.x = -this.bulletSpeed * Math.cos(bulletAngle);
   bullet.name = "bullet";
   bullet.scale.setTo(this.bulletScale,this.bulletScale);
-  scalePolygon(this.game, this.bulletsInfo.physics, this.bulletsInfo.scaledPhysics, this.bulletsInfo.ammo[0].physics, this.bulletScale);
+  scalePolygon(this.game, this.gameMode.gunConfig.physics, this.gameMode.gunConfig.scaledPhysics, this.bulletsInfo.ammo[0].physics, this.bulletScale);
   bullet.body.clearShapes();
-  bullet.body.loadPolygon("scaledGunPhysicsData", "bullet1");
+  bullet.body.loadPolygon(this.gameMode.gunConfig.scaledPhysics, this.bulletsInfo.ammo[0].physics);
   bullet.body.setCollisionGroup(this.gameMode.collisionGroups.bullets);
   for (var colGroup in this.gameMode.collisionGroups)
     if (colGroup != "bullets") {

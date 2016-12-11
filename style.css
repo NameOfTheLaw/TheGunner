@@ -1,13 +1,14 @@
-body
-{
+body {
   background: #111;
 }
-.main-title{
+
+canvas {
+  display: inline-block;
+  margin:20px auto;
+}
+
+.main-title {
   color: #fff;
   text-align: center;
   font-family: sans-serif;
-}
-canvas{
-  display: inline-block;
-  margin:20px auto;
 }

@@ -9,8 +9,7 @@ function Player(game, gameMode) {
 }
 
 Player.prototype.init = function () {
-
-  var playerBody = this.game.cache.getJSON('playerBody');
+  var playerBody = this.game.cache.getJSON(this.gameMode.playerConfig.config);
   var bodyParts;
 
   bodyParts = this.game.add.group();
@@ -18,13 +17,19 @@ Player.prototype.init = function () {
   bodyParts.physicsBodyType = Phaser.Physics.P2JS;
 
   for (var num in playerBody.limb) {
-    var tempSprite = bodyParts.create(100, 200, playerBody.image);
+    var tempSprite = bodyParts.create(100, 200, this.gameMode.playerConfig.ss);
     tempSprite.frameName = playerBody.limb[num].frame;
     tempSprite.name = num;
     tempSprite.scale.setTo(this.playerScale,this.playerScale);
-    scalePolygon(this.game, playerBody.physics, playerBody.scaledPhysics, playerBody.limb[num].physics, this.playerScale);
+    scalePolygon(
+      this.game,
+      this.gameMode.playerConfig.physics,
+      this.gameMode.playerConfig.scaledPhysics,
+      playerBody.limb[num].physics,
+      this.playerScale
+    );
     tempSprite.body.clearShapes();
-  	tempSprite.body.loadPolygon(playerBody.scaledPhysics, playerBody.limb[num].physics);
+  	tempSprite.body.loadPolygon(this.gameMode.playerConfig.scaledPhysics, playerBody.limb[num].physics);
     tempSprite.body.setCollisionGroup(this.gameMode.collisionGroups[playerBody.limb[num].collisionGroup]);
     if ("collides" in playerBody.limb[num])
       for (var i in playerBody.limb[num].collides) {
@@ -33,10 +38,9 @@ Player.prototype.init = function () {
       }
 
     playerBody.limb[num].sprite = tempSprite;
-    if (num == playerBody.anchorLimb) {
-      this.anchorSprite = playerBody.limb[num].sprite;
-    }
   }
+
+  this.anchorSprite = playerBody.limb[playerBody.anchorLimb].sprite;
 
   for (var num in playerBody.constraint) {
     var element = playerBody.constraint[num];
@@ -68,19 +72,19 @@ Player.prototype.init = function () {
 }
 
 Player.prototype.moveLeft = function()  {
-  this.playerBody.limb.torso.sprite.body.moveLeft(this.playerSpeed);
+  this.anchorSprite.body.moveLeft(this.playerSpeed);
 }
 
 Player.prototype.moveRight = function()  {
-  this.playerBody.limb.torso.sprite.body.moveRight(this.playerSpeed);
+  this.anchorSprite.body.moveRight(this.playerSpeed);
 }
 
 Player.prototype.moveDown = function()  {
-  this.playerBody.limb.torso.sprite.body.moveDown(this.playerSpeed);
+  this.anchorSprite.body.moveDown(this.playerSpeed);
 }
 
 Player.prototype.moveUp = function()  {
-  this.playerBody.limb.torso.sprite.body.moveUp(this.playerSpeed);
+  this.anchorSprite.body.moveUp(this.playerSpeed);
 }
 
 Player.prototype.attendHealth = function(health) {
@@ -96,9 +100,9 @@ Player.prototype.gotHit = function (body1, body2) {
   if (!body2.sprite.hitted) {
     body2.sprite.hitted = true;
     this.health.damage(this.playerBody.limb[body1.sprite.name].damage);
+    addEmitter(this.game, this.gameMode, body1.sprite, body2.sprite);
     body2.sprite.kill();
   }
-  //debug = "hit in " + body1.sprite.name + " (-" + this.playerBody.limb[body1.sprite.name].damage + ")";
 }
 
 /*
@@ -117,7 +121,7 @@ Player.prototype.killBodyPart = function (part) {
 */
 
 Player.prototype.reinit = function () {
-  this.playerBody.limb.torso.sprite.x = 100;
-  this.playerBody.limb.torso.sprite.y = 200;
+  this.anchorSprite.x = 100;
+  this.anchorSprite.y = 200;
   this.health.refresh();
 }

@@ -1,0 +1,24 @@
+{
+  "gun": {
+    "name": "gun",
+    "config": "bullets",
+    "config_src": "assets/config/gun_configuration.json",
+    "ss": "bullets_atlas",
+    "ss_src": "assets/spritesheet/gun_spritesheet.png",
+    "ssAtlas_src": "assets/spritesheet/gun_spritesheet.xml",
+    "physics": "gunPhysicsData",
+    "physics_src": "assets/physics/gun_spritesheet.json",
+    "scaledPhysics": "scaledGunPhysicsData"
+  },
+  "player": {
+    "name": "default",
+    "config": "player",
+    "config_src": "assets/config/player_configuration.json",
+    "ss": "player_atlas",
+    "ss_src": "assets/spritesheet/player_spritesheet.png",
+    "ssAtlas_src": "assets/spritesheet/player_spritesheet.xml",
+    "physics": "playerPhysicsData",
+    "physics_src": "assets/physics/player_spritesheet.json",
+    "scaledPhysics": "scaledPlayerPhysicsData"
+  }
+}

@@ -1,4 +1,9 @@
-function GameMode() {
+function GameMode(game) {
+    this.game = game;
+    this.collisionGroups = {};
+    this.gameOver = false;
+    this.started = false;
+    this.emittersList = [];
 }
 
 GameMode.prototype.isOver = function () {
@@ -14,6 +19,7 @@ function MatrixP1(game) {
     this.collisionGroups = {};
     this.gameOver = false;
     this.started = false;
+    this.emittersList = [];
 }
 
 function MatrixP2(game) {
@@ -21,12 +27,17 @@ function MatrixP2(game) {
     this.collisionGroups = {};
     this.gameOver = false;
     this.started = false;
+    this.emittersList = [];
 }
 
 MatrixP1.prototype = Object.create(GameMode.prototype);
 MatrixP2.prototype = Object.create(MatrixP1.prototype);
 
 MatrixP1.prototype.init = function() {
+  var config = this.game.cache.getJSON('config');
+  this.gunConfig = config.gun;
+  this.playerConfig = config.player;
+
   this.collisionGroups.torso = this.game.physics.p2.createCollisionGroup();
   this.collisionGroups.hands = this.game.physics.p2.createCollisionGroup();
   this.collisionGroups.head = this.game.physics.p2.createCollisionGroup();
@@ -37,7 +48,7 @@ MatrixP1.prototype.init = function() {
 
   this.player = new Player(this.game, this);
   this.player.init();
-  this.health = new HealthBar({total: 200});
+  this.health = new HealthBar({total: 80});
   this.player.attendHealth(this.health);
   this.weapon = new Weapon(this.game, this);
   this.weapon.showWarnings = true;
@@ -58,6 +69,16 @@ MatrixP1.prototype.update = function() {
   //take a fire
   this.weapon.refresh();
   this.weapon.fire();
+
+  //moves active emmiters and removes destroyed emitters
+  for (var i = 0; i< this.emittersList.length; i++) {
+    if (!this.emittersList[i].alive) {
+      this.emittersList.splice(i, 1);
+    } else {
+      this.emittersList[i].x = this.emittersList[i].sprite.x;
+      this.emittersList[i].y = this.emittersList[i].sprite.y;
+    }
+  }
 
   //take moves
   if (this.cursors.left.isDown) {

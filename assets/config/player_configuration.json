@@ -1,7 +1,6 @@
 {
-  "image": "player_atlas",
-  "physics": "playerPhysicsData",
-  "scaledPhysics": "scaledPlayerPhysicsData",
+  "collisionGroup": "player",
+  "anchorLimb" : "head",
   "limb": {
     "head": {
       "frame": "head.png",
@@ -88,7 +87,6 @@
       "damage": 5
     }
   },
-  "anchorLimb" : "torso",
   "constraint": [
     {
       "bodyA": "torso",
